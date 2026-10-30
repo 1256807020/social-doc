@@ -93,7 +93,7 @@ import { Suspense } from "react";
  */
 export default function PostPage({ params }: { params: Promise<{ slug: string[] }> }) {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
+    <div className="px-6 py-8">
       <Suspense fallback={<PostSkeleton />}>
         <PostContent params={params} />
       </Suspense>

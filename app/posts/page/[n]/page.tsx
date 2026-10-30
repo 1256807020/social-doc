@@ -72,7 +72,7 @@ import { Suspense } from "react";
  */
 export default function PostsPageN({ params }: { params: Promise<{ n: string }> }) {
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <Suspense fallback={<PostsPageNSkeleton />}>
         <PostsPageNContent params={params} />
       </Suspense>

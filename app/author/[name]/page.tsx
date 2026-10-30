@@ -39,7 +39,7 @@ export async function generateMetadata({
  */
 export default function AuthorPage({ params }: { params: Promise<{ name: string }> }) {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="px-6 py-10">
       <Suspense fallback={<AuthorSkeleton />}>
         <AuthorContent params={params} />
       </Suspense>

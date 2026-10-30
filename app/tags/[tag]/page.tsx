@@ -55,7 +55,7 @@ export async function generateMetadata({
  */
 export default function TagPage({ params }: { params: Promise<{ tag: string }> }) {
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <Suspense fallback={<TagSkeleton />}>
         <TagContent params={params} />
       </Suspense>

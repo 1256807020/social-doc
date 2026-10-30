@@ -19,7 +19,7 @@ export default async function TagsIndex() {
   const tags = await getAllTags();
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <h1 className="text-3xl font-bold">标签</h1>
       <p className="mt-2 text-sm opacity-70">
         共 {tags.length} 个标签 —— 来自各篇文章 frontmatter 的{" "}

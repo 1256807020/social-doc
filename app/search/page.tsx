@@ -18,7 +18,7 @@ export default async function SearchPage() {
   const docs = await buildSearchIndex();
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <header>
         <h1 className="text-3xl font-bold">搜索</h1>
         <p className="mt-2 text-sm opacity-70">

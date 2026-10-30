@@ -62,7 +62,7 @@ import { Suspense } from "react";
  */
 export default function CategoryPage({ params }: { params: Promise<{ category: string[] }> }) {
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <Suspense fallback={<CategorySkeleton />}>
         <CategoryContent params={params} />
       </Suspense>

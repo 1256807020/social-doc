@@ -24,7 +24,7 @@ export default async function PostsIndex() {
   const authors = await getAuthors();
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <h1 className="text-3xl font-bold">文章列表</h1>
       <p className="mt-2 text-sm opacity-70">
         内容源：<code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs dark:bg-gray-800">content/</code>
