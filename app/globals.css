@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* Tailwind v4 的插件用 @plugin 指令引入（v3 是写进 tailwind.config.js）。
+   typography 插件提供 prose / prose-invert 等类，用来排版正文。 */
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-bg: #ffffff;
+  --color-fg: #0f1117;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-accent: #2563eb;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f1117;
+    --color-fg: #e5e7eb;
+    --color-muted: #9ca3af;
+    --color-border: #262b36;
+    --color-accent: #60a5fa;
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+/* Shiki 代码高亮的双主题切换 */
+code[data-theme*=" "],
+code[data-theme*=" "] span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  code[data-theme*=" "],
+  code[data-theme*=" "] span {
+    color: var(--shiki-dark);
+  }
+}

@@ -1,0 +1,33 @@
+---
+title: "第一篇文章"
+date: "2026-11-03"
+excerpt: "往 content/ 目录丢一个 .mdx 文件，它就变成了一篇文章。"
+tags: ["教程", "MDX"]
+---
+
+# 第一篇文章
+
+我放在 `content/` 目录下的根级文件 —— 它会出现在 `/posts/hello`。
+
+## 支持什么
+
+- 标准 Markdown
+- **GFM**：表格、删除线、任务列表
+- **Shiki** 代码高亮
+- 自定义组件 `<Callout>`
+
+<Callout type="info" title="自定义组件">
+  这段是 `mdx-components.tsx` 里登记的 `Callout` 组件。
+  文章作者不需要 import 任何东西。
+</Callout>
+
+```ts
+// 代码块会经过 Shiki 高亮
+export function hello(name: string) {
+  return `Hello, ${name}!`;
+}
+```
+
+## 下一步
+
+去 `content/tech/` 看看分类是怎么工作的。

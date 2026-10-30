@@ -1,0 +1,28 @@
+---
+title: "MDX 基础：为什么值得用它"
+date: "2026-11-01"
+excerpt: "Markdown 写起来快，MDX 让你在文章里直接用 React 组件。"
+tags: ["教程", "MDX"]
+author: "next16-sass"
+---
+
+# MDX 基础：为什么值得用它
+
+这篇和「第一篇文章」共享 `教程` 与 `MDX` 两个标签 ——
+所以在文章底部能看到「相关文章」。
+
+## 纯 Markdown 的天花板
+
+标准 Markdown 只能输出 HTML 标签，想插入任何交互元素都很别扭。
+
+## MDX 补上了这一块
+
+MDX = Markdown + JSX，语法上完全兼容 Markdown。
+
+<Callout type="warn" title="注意">
+  这个提示框是 React 组件，通过 `mdx-components.tsx` 登记后直接用的。
+</Callout>
+
+## YAML frontmatter
+
+文件头部用 `---` 包裹的元数据块，`.md` 与 `.mdx` 都支持。

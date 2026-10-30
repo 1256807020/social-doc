@@ -1,0 +1,35 @@
+---
+title: "SSG 与 ISR 到底怎么配合"
+date: "2026-11-02"
+excerpt: "静态生成、增量静态再生、缓存失效，三者各自解决什么问题。"
+tags: ["Next.js", "缓存", "性能"]
+---
+
+# SSG 与 ISR 到底怎么配合
+
+我放在 `content/tech/` 目录里 —— 这篇会自动归到「技术」分类。
+
+| 手段 | 时机 | 适合 |
+|---|---|---|
+| SSG | 构建期 | 内容不变（文档、营销页） |
+| ISR | 首次请求后按 TTL 后台重算 | 内容偶尔变（文章、公告） |
+| 按需失效 | 你主动调 `revalidateTag` | 内容随操作变 |
+
+## 一段代码
+
+```ts
+async function getPost(id: string) {
+  "use cache";
+  cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
+  cacheTag(`post-${id}`);
+  return posts.find((p) => p.id === id);
+}
+```
+
+> 三段语义：`stale`（还能多旧）、`revalidate`（多久后台重算）、`expire`（多久彻底丢弃）。
+
+## 怎么选
+
+- 内容永不改变 → 纯 SSG
+- 内容偶尔变 → ISR + `cacheLife`
+- 内容随操作变 → 按需失效（`revalidateTag` / `updateTag`）
