@@ -8,3 +8,6 @@ build/
 !.env.example
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# playwright-cli 的临时输出目录
+.playwright-cli/

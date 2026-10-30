@@ -54,6 +54,21 @@ const nextConfig: NextConfig = {
     root: import.meta.dirname,
   },
 
+  /**
+   * 允许这些 host 访问 dev 资源。
+   *
+   * ⚠️ 实测踩到的坑：用 http://127.0.0.1:3000 访问 dev server 时，
+   *    Next 会判定为跨域并**拦截 dev 资源**（控制台打印
+   *    "Cross-origin access to Next.js dev resources is blocked"），
+   *    结果是客户端 chunk 被拦 → **React 根本不 hydrate** →
+   *    页面上所有交互（含主题切换按钮）全部失效，
+   *    而且控制台**没有任何报错**，极难排查。
+   *
+   *    所以本地调试务必用 http://localhost:3000，
+   *    或者在这里把 127.0.0.1 / 局域网 IP 加进白名单。
+   */
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
+
   // 站点地址：RSS / sitemap 需要绝对 URL。
   // 生产环境建议用环境变量注入：NEXT_PUBLIC_SITE_URL=https://your-domain.com
 };

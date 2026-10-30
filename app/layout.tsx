@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ThemeProvider } from "next-themes";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { jsonLdScript, websiteJsonLd } from "@/lib/seo";
 import SearchShortcut from "@/components/search/SearchShortcut";
+import ThemeScript from "@/components/theme/ThemeScript";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import "./globals.css";
 
@@ -30,10 +30,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
+    /*
+      suppressHydrationWarning —— 必须加，否则报 hydration mismatch。
+
+      原因：<html> 上的 class（dark）与 style（color-scheme）是由
+      ThemeScript 的**内联脚本**在浏览器端根据 localStorage / 系统偏好
+      动态设置的。而服务端渲染时不知道用户的主题 → 两边属性不一致
+      → React 报「A tree hydrated but some attributes of the server
+      rendered HTML didn't match the client properties」。
+
+      这个属性只压制 <html> **自身**属性的警告，不影响任何子节点。
+    */
+    <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        {/*
+          主题初始化脚本 —— 必须内联在 <head> 且在 hydration 之前执行，
+          这样首屏就是用户上次选的配色，不会闪一下亮色再变暗。
+        */}
+        <ThemeScript />
+      </head>
       <body className="min-h-screen antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <header className="border-b border-[var(--color-border)]">
+        <header className="border-b border-[var(--border)]">
           <nav className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4 text-sm sm:px-6">
             <Link href="/" className="font-bold">
               {SITE_NAME}
@@ -63,8 +80,8 @@ export default function RootLayout({
         {jsonLdScript(websiteJsonLd())}
 
         <main className="px-4 py-8 sm:px-6">{children}</main>
-        </ThemeProvider>
-        <footer className="border-t border-[var(--color-border)]">
+
+        <footer className="border-t border-[var(--border)]">
           <div className="mx-auto max-w-6xl px-4 py-6 text-xs opacity-60 sm:px-6">
             由 Next.js 16 内容引擎基座生成 —— 内容源在{" "}
             <code className="font-mono">content/</code> 目录

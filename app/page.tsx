@@ -29,7 +29,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="border-b border-[var(--color-border)] pb-8">
+      <section className="border-b border-[var(--border)] pb-8">
         <h1 className="text-4xl font-bold">{SITE_NAME}</h1>
         <p className="mt-3 opacity-70">
           文章站 / 博客站 / 文档站的内容引擎基座。
@@ -40,13 +40,13 @@ export default async function HomePage() {
           全部自动生成。
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
-          <Link href="/posts" className="rounded-md bg-[var(--color-accent)] px-4 py-2 text-white">
+          <Link href="/posts" className="rounded-md bg-[var(--accent)] px-4 py-2 text-white">
             浏览全部文章
           </Link>
-          <Link href="/search" className="rounded-md border border-[var(--color-border)] px-4 py-2">
+          <Link href="/search" className="rounded-md border border-[var(--border)] px-4 py-2">
             搜索
           </Link>
-          <Link href="/rss.xml" className="rounded-md border border-[var(--color-border)] px-4 py-2">
+          <Link href="/rss.xml" className="rounded-md border border-[var(--border)] px-4 py-2">
             RSS
           </Link>
         </div>
@@ -59,7 +59,7 @@ export default async function HomePage() {
             <li key={post.slug}>
               <Link
                 href={`/posts/${post.slug}`}
-                className="block rounded-lg border border-[var(--color-border)] p-4 transition hover:border-[var(--color-accent)]"
+                className="block rounded-lg border border-[var(--border)] p-4 transition hover:border-[var(--accent)]"
               >
                 <div className="flex items-center gap-2 text-xs opacity-60">
                   {post.category ? (
@@ -77,12 +77,12 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      <section className="border-t border-[var(--color-border)] py-8">
+      <section className="border-t border-[var(--border)] py-8">
         <h2 className="text-lg font-semibold">这个基座给了什么</h2>
         <ul className="mt-4 grid gap-2 text-sm opacity-80 sm:grid-cols-2">
           {capabilities.map((item) => (
             <li key={item} className="flex items-start gap-2">
-              <span className="text-[var(--color-accent)]">✓</span>
+              <span className="text-[var(--accent)]">✓</span>
               {item}
             </li>
           ))}

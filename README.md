@@ -1,4 +1,4 @@
-# 内容引擎基座 · content-engine-base
+# 内容引擎基座 · doc-engine
 
 > **文章站 / 博客站 / 文档站的内容层** —— 把 `.md` / `.mdx` 丢进 `content/` 即成文章。
 >
