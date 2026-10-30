@@ -42,16 +42,23 @@ export async function generateMetadata({
   const entry = getPostFiles().find((p) => p.slug === slug.join("/"));
   if (!entry) return { title: slug.join("/") };
 
-  const mod = await import(`@/content/${entry.file}`);
-  const meta = (mod.metadata ?? {}) as Record<string, unknown>;
+  // ⚠️ 必须走 getPostMeta()，不能直接读 import 出来的 mod.metadata ——
+  //    getPostMeta() 会把三条元数据来源合并：
+  //      ① YAML frontmatter（被 remark-mdx-frontmatter 编译成 export const frontmatter）
+  //      ② 手写的 export const metadata（Next 原生）
+  //      ③ 同名 .json 旁路
+  //    直接读 mod.metadata 只能拿到第 ② 条，
+  //    而现在的示例文章都用 YAML frontmatter →
+  //    实测会渲染成 <title>hello</title>（用文件名而不是文章标题）。
+  const meta = (await getPostMeta(entry.slug)) ?? { title: entry.baseSlug };
   const url = absoluteUrl(`/posts/${entry.slug}`);
 
   return {
-    title: (meta.title as string) ?? entry.baseSlug,
-    description: (meta.excerpt as string) ?? undefined,
+    title: meta.title ?? entry.baseSlug,
+    description: meta.excerpt,
     alternates: { canonical: url },
-    authors: meta.author ? [{ name: String(meta.author) }] : undefined,
-    keywords: (meta.tags as string[]) ?? undefined,
+    authors: meta.author ? [{ name: meta.author }] : undefined,
+    keywords: meta.tags,
     openGraph: {
       type: "article",
       title: (meta.title as string) ?? entry.baseSlug,
@@ -59,11 +66,10 @@ export async function generateMetadata({
       url,
       // 文章级动态 OG 图（见 app/og/[...slug]/route.tsx）
       images: [{ url: absoluteUrl(`/og/${entry.slug}`), width: 1200, height: 630 }],
-      publishedTime: meta.date as string | undefined,
-      modifiedTime:
-        (meta.updated as string) ?? (meta.date as string | undefined),
-      authors: meta.author ? [String(meta.author)] : undefined,
-      tags: (meta.tags as string[]) ?? undefined,
+      publishedTime: meta.date,
+      modifiedTime: meta.updated ?? meta.date,
+      authors: meta.author ? [meta.author] : undefined,
+      tags: meta.tags,
     },
     twitter: {
       card: "summary_large_image",
