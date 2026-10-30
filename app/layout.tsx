@@ -51,7 +51,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen antialiased">
         <header className="border-b border-[var(--border)]">
-          <nav className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4 text-sm sm:px-6">
+          <nav className="flex items-center gap-4 px-4 py-4 text-sm sm:px-6">
             <Link href="/" className="font-bold">
               {SITE_NAME}
             </Link>
@@ -82,7 +82,7 @@ export default function RootLayout({
         <main className="px-4 py-8 sm:px-6">{children}</main>
 
         <footer className="border-t border-[var(--border)]">
-          <div className="mx-auto max-w-6xl px-4 py-6 text-xs opacity-60 sm:px-6">
+          <div className="px-4 py-6 text-xs opacity-60 sm:px-6">
             由 Next.js 16 内容引擎基座生成 —— 内容源在{" "}
             <code className="font-mono">content/</code> 目录
           </div>
