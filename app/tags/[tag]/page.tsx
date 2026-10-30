@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getAllPostMeta, getAllTags } from "@/lib/posts";
 
@@ -35,11 +36,50 @@ export async function generateMetadata({
   };
 }
 
-export default async function TagPage({
-  params,
-}: {
-  params: Promise<{ tag: string }>;
-}) {
+/**
+ * ⚠️ 页面组件【不能直接 await params】——
+ *
+ * Next 16 开了 `cacheComponents`（Cache Components / PPR）后，
+ * 在 <Suspense> 之外访问 `params` / `searchParams` / `cookies()` / `headers()`
+ * 属于「运行时数据」，会让整条路由无法预渲染：
+ *
+ *   Blocking Route: Route "/tags/[tag]": Next.js encountered runtime data
+ *   during prerendering.
+ *
+ * 正确姿势（也是 Next 官方文档的写法）：
+ *   ① 页面组件【不 await】params，只把 Promise 往下传；
+ *   ② 真正 await params 的 async 子组件放在 <Suspense> 内部。
+ *
+ * 这样 Next 知道「这段数据在 Suspense 边界内读取」，
+ * 静态壳照常预渲染，内容流式补上 → 路由恢复可预渲染（◐ 而非 blocking）。
+ */
+export default function TagPage({ params }: { params: Promise<{ tag: string }> }) {
+  return (
+    <div className="mx-auto max-w-2xl p-6">
+      <Suspense fallback={<TagSkeleton />}>
+        <TagContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+/** 骨架屏 —— 与真实内容同宽，避免流式补上时布局跳动 */
+function TagSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-3 w-12 rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="mt-2 h-8 w-48 rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="mt-8 space-y-4">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="h-24 rounded-lg bg-gray-100 dark:bg-gray-800" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** 真正读 params 的部分 —— 必须在 <Suspense> 内部 */
+async function TagContent({ params }: { params: Promise<{ tag: string }> }) {
   const { tag: raw } = await params;
   const tag = decodeURIComponent(raw);
   const allTags = await getAllTags();
@@ -52,7 +92,7 @@ export default async function TagPage({
   const posts = (await getAllPostMeta()).filter((p) => (p.tags ?? []).includes(tag));
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <>
       <header className="border-b border-gray-200 pb-4 dark:border-gray-700">
         <p className="text-xs uppercase tracking-wider opacity-60">标签</p>
         <h1 className="mt-1 text-3xl font-bold">{tag}</h1>
@@ -81,6 +121,6 @@ export default async function TagPage({
           ← 返回标签列表
         </Link>
       </p>
-    </div>
+    </>
   );
 }

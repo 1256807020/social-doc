@@ -73,11 +73,50 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string[] }>;
-}) {
+import { Suspense } from "react";
+
+/**
+ * ⚠️ 页面组件【不能直接 await params】——
+ *
+ * Next 16 开了 `cacheComponents`（Cache Components / PPR）后，
+ * 在 <Suspense> 之外访问 `params` / `searchParams` / `cookies()` / `headers()`
+ * 属于「运行时数据」，会让整条路由无法预渲染：
+ *
+ *   Blocking Route: Route "...": Next.js encountered runtime data during prerendering.
+ *
+ * 正确姿势（Next 官方文档的写法）：
+ *   ① 页面组件【不 await】params，只把 Promise 往下传；
+ *   ② 真正 await params 的 async 子组件放在 <Suspense> 内部。
+ *
+ * 这样 Next 知道「这段数据在 Suspense 边界内读取」，
+ * 静态壳照常预渲染，内容流式补上 → 路由恢复可预渲染（◐ 而非 blocking）。
+ */
+export default function PostPage({ params }: { params: Promise<{ slug: string[] }> }) {
+  return (
+    <div className="mx-auto max-w-6xl px-6 py-8">
+      <Suspense fallback={<PostSkeleton />}>
+        <PostContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+/** 骨架屏 —— 与真实内容同宽，避免流式补上时布局跳动 */
+function PostSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-3 w-12 rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="mt-2 h-8 w-48 rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="mt-8 space-y-4">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="h-24 rounded-lg bg-gray-100 dark:bg-gray-800" />
+        ))}
+      </div>
+    </div>
+  );
+}
+/** 真正读 params 的部分 —— 必须在 <Suspense> 内部 */
+async function PostContent({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
   const entry = getPostFiles().find((p) => p.slug === slug.join("/"));
 
@@ -105,7 +144,7 @@ export default async function PostPage({
   }));
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8">
+    <>
       {/* JSON-LD：Article + BreadcrumbList */}
       {jsonLdScript([
         articleJsonLd({
@@ -274,6 +313,6 @@ export default async function PostPage({
           <Toc items={toc} />
         </aside>
       </div>
-    </div>
+    </>
   );
 }
